@@ -1,0 +1,1 @@
+﻿& act -W .\.github\workflows\test.publish.yml --artifact-server-path .artifacts

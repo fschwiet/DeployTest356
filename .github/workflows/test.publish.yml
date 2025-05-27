@@ -1,0 +1,24 @@
+name: Prepare a publish folder for testing
+on:
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and Publish
+        uses: ./.github/actions/build-publish-folder
+        with:
+          dotnet-version: '9.0'
+          configuration: 'Release'
+          runtime: 'win-x86'
+          output-path: './publish'
+
+      - name: Upload result
+        uses: actions/upload-artifact@v4
+        with:
+          name: publish folder
+          path: ./publish
+          if-no-files-found: error 

@@ -1,0 +1,40 @@
+name: 'Build and Publish .NET Application'
+description: 'Builds and publishes a .NET application with specified configuration'
+
+inputs:
+  dotnet-version:
+    description: 'Version of .NET to use'
+    required: true
+    default: '9.0'
+  configuration:
+    description: 'Build configuration'
+    required: false
+    default: 'Release'
+  runtime:
+    description: 'Target runtime'
+    required: false
+    default: 'win-x86'
+  output-path:
+    description: 'Output path for published files'
+    required: false
+    default: './publish'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ inputs.dotnet-version }}
+        
+    - name: Install dependencies
+      shell: bash
+      run: dotnet restore
+      
+    - name: Build
+      shell: bash
+      run: dotnet build --configuration ${{ inputs.configuration }} --no-restore
+
+    - name: Publish
+      shell: bash
+      run: dotnet publish --configuration ${{ inputs.configuration }} --output ${{ inputs.output-path }} --runtime ${{ inputs.runtime }} 
