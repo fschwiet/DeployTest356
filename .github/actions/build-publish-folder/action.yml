@@ -22,6 +22,29 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install client dependencies
+      shell: bash
+      working-directory: ./client
+      run: npm ci
+
+    - name: Build client
+      shell: bash
+      working-directory: ./client
+      run: npm run build
+
+    - name: Create statics directory
+      shell: bash
+      run: mkdir -p ${{ inputs.output-path }}/statics
+
+    - name: Copy client build output
+      shell: bash
+      run: cp -r ./client/dist/* ${{ inputs.output-path }}/statics/
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
