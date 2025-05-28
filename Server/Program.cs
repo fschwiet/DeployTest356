@@ -14,19 +14,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var staticFilesPath = Path.GetFullPath(app.Configuration.GetValue<string>("WwwRootStaticFiles") ?? "./wwwroot");
+var physicalFileProvider = new PhysicalFileProvider(
+    Path.GetFullPath(app.Configuration.GetValue<string>("WwwRootStaticFiles") ?? "./wwwroot")
+);
 
-app.UseDefaultFiles(new DefaultFilesOptions()
-{
-    FileProvider = new PhysicalFileProvider(staticFilesPath)
-});
+app.UseDefaultFiles(new DefaultFilesOptions() { FileProvider = physicalFileProvider });
 
-app.UseStaticFiles(new StaticFileOptions()
-{
-    FileProvider = new PhysicalFileProvider(staticFilesPath)
-});
+app.UseStaticFiles(new StaticFileOptions() { FileProvider = physicalFileProvider });
 
 app.MapControllers();
+
+app.MapFallbackToFile("index.html", new StaticFileOptions { FileProvider = physicalFileProvider });
 
 app.Run();
 
